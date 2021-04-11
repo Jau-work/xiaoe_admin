@@ -3,7 +3,15 @@
     <!--查询表单-->
     <el-form :inline="true">
       <el-form-item label="讲师姓名">
-        <el-input v-model="searchObj.name" placeholder="讲师" />
+        <!-- <el-input v-model="searchObj.name" placeholder="讲师" /> -->
+        <el-autocomplete
+          v-model="searchObj.name"
+          :fetch-suggestions="querySearch"
+          :trigger-on-focus="false"
+          class="inline-input"
+          placeholder="请输入讲师"
+          value-key="name"
+        />
       </el-form-item>
 
       <el-form-item>
@@ -203,6 +211,12 @@ export default {
             })
           }
         })
+    },
+    // 输入建议
+    querySearch(queryString, callback) {
+      teacherApi.selectNameListByKey(queryString).then(response => {
+        callback(response.data.nameList)
+      })
     }
   }
 }

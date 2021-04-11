@@ -46,5 +46,11 @@ export default {
       method: 'put',
       data: teacher
     })
+  },
+  selectNameListByKey(key) {
+    return request({
+      url: `/admin/edu/teacher/list/name/${key}`,
+      method: 'get'
+    })
   }
 }
