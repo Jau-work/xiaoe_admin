@@ -8,6 +8,11 @@
       </el-form-item>
 
       <!-- 课程讲师 TODO -->
+      <el-form-item label="课程讲师">
+        <el-select v-model="courseInfo.teacherId">
+          <el-option v-for="teacher in teacherList" :key="teacher.id" :label="teacher.name" :value="teacher.id"/>
+        </el-select>
+      </el-form-item>
 
       <!-- 所属分类 TODO -->
 
@@ -32,6 +37,7 @@
 
 <script>
 import courseApi from '@/api/course'
+import teacherApi from '@/api/teacher'
 
 export default {
   data() {
@@ -46,10 +52,19 @@ export default {
         subjectParentId: '',
         cover: '',
         description: ''
-      }
+      },
+      teacherList: [] // 讲师列表
     }
   },
+  created() {
+    this.initTeacherList()
+  },
   methods: {
+    initTeacherList() {
+      teacherApi.list().then(res => {
+        this.teacherList = res.data.items
+      })
+    },
     // 保存并下一步
     saveAndNext() {
       this.saveBtnDisabled = true
