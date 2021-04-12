@@ -139,8 +139,13 @@ export default {
     // 保存并下一步
     saveAndNext() {
       this.saveBtnDisabled = true
-      this.saveData()
+      if (!this.$parent.courseId) {
+        this.saveData()
+      } else {
+        this.updateData()
+      }
     },
+    // 保存课程信息
     saveData() {
       courseApi.saveCourseInfo(this.courseInfo).then(res => {
         this.$message.success(res.message)
@@ -148,8 +153,12 @@ export default {
         this.$parent.active = 1 // 访问父组件的成员 $parent
       })
     },
+    // 更新课程信息
     updateData() {
-
+      courseApi.updateCourseInfoById(this.courseInfo).then(res => {
+        this.$message.success(res.message)
+        this.$parent.active = 1 // 访问父组件的成员 $parent
+      })
     },
     // 获取课程分类列表
     initSubjectList() {
