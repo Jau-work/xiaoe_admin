@@ -101,14 +101,20 @@ export default {
     }
   },
   created() {
-    this.initTeacherList()
     // 课程基本信息回显
+    // courseId来自路由
+    if (this.$route.name === 'CourseInfoEdit') {
+      this.$parent.courseId = this.$route.params.id
+    }
+
+    // courseId来自父组件
     if (this.$parent.courseId) {
       this.fetchCourseInfoById(this.$parent.courseId)
     } else {
       // 新增状态 只渲染一级类别
       this.initSubjectList()
     }
+    this.initTeacherList()
   },
   methods: {
     // 根据id获取课程基本信息
