@@ -1,7 +1,29 @@
 <template>
   <div class="app-container">
-    <!-- 课程信息表单 TODO -->
-    info
+    <!-- 课程信息表单 -->
+    <el-form label-width="120px">
+
+      <el-form-item label="课程标题">
+        <el-input v-model="courseInfo.title" placeholder=" 示例：机器学习项目课：从基础到搭建项目视频课程。专业名称注意大小写"/>
+      </el-form-item>
+
+      <!-- 课程讲师 TODO -->
+
+      <!-- 所属分类 TODO -->
+
+      <el-form-item label="总课时">
+        <el-input-number :min="0" v-model="courseInfo.lessonNum" controls-position="right" placeholder="请填写课程的总课时数"/>
+      </el-form-item>
+
+      <!-- 课程简介 TODO -->
+
+      <!-- 课程封面 TODO -->
+
+      <el-form-item label="课程价格">
+        <el-input-number :min="0" v-model="courseInfo.price" controls-position="right" placeholder="免费课程请设置为0元"/> 元
+      </el-form-item>
+    </el-form>
+
     <div style="text-align:center">
       <el-button :disabled="saveBtnDisabled" type="primary" @click="saveAndNext">保存并下一步</el-button>
     </div>
@@ -9,17 +31,39 @@
 </template>
 
 <script>
+import courseApi from '@/api/course'
+
 export default {
   data() {
     return {
-      saveBtnDisabled: false // 按钮是否禁用
+      saveBtnDisabled: false, // 按钮是否禁用
+      courseInfo: { // 课程基本信息
+        price: 0,
+        lessonNum: 0,
+        // 以下解决表单数据不全时insert语句非空校验
+        teacherId: '',
+        subjectId: '',
+        subjectParentId: '',
+        cover: '',
+        description: ''
+      }
     }
   },
   methods: {
     // 保存并下一步
     saveAndNext() {
       this.saveBtnDisabled = true
-      this.$parent.active = 1 // 访问父组件的成员 $parent
+      this.saveData()
+    },
+    saveData() {
+      courseApi.saveCourseInfo(this.courseInfo).then(res => {
+        this.$message.success(res.message)
+        this.$parent.courseId = res.data.courseId // 获取courseId
+        this.$parent.active = 1 // 访问父组件的成员 $parent
+      })
+    },
+    updateData() {
+
     }
   }
 }
