@@ -49,7 +49,19 @@
         <tinymce :height="300" v-model="courseInfo.description"/>
       </el-form-item>
 
-      <!-- 课程封面 TODO -->
+      <!-- 课程封面 -->
+      <el-form-item label="课程封面">
+        <el-upload
+          :show-file-list="false"
+          :on-success="handleCoverSuccess"
+          :before-upload="beforeCoverUpload"
+          :on-error="handleCoverError"
+          class="cover-uploader"
+          action="http://localhost:8120/admin/oss/file/upload?module=cover">
+          <img v-if="courseInfo.cover" :src="courseInfo.cover">
+          <i v-else class="el-icon-plus avatar-uploader-icon"/>
+        </el-upload>
+      </el-form-item>
 
       <el-form-item label="课程价格">
         <el-input-number :min="0" v-model="courseInfo.price" controls-position="right" placeholder="免费课程请设置为0元"/> 元
@@ -90,9 +102,34 @@ export default {
   },
   created() {
     this.initTeacherList()
-    this.initSubjectList()
+    // 课程基本信息回显
+    if (this.$parent.courseId) {
+      this.fetchCourseInfoById(this.$parent.courseId)
+    } else {
+      // 新增状态 只渲染一级类别
+      this.initSubjectList()
+    }
   },
   methods: {
+    // 根据id获取课程基本信息
+    fetchCourseInfoById(id) {
+      courseApi.getCourseInfoById(id).then(res => {
+        this.courseInfo = res.data.item
+
+        // 课程类别渲染
+        subjectApi.getNestedTreeList().then(res => {
+          this.subjectList = res.data.items
+
+          // 判断 this.subjectList 下哪个一级类别是当前绑定的一级类别
+          this.subjectList.forEach(subject => {
+            if (subject.id === this.courseInfo.subjectParentId) {
+              // 找到对应一级类别的二级类别列表
+              this.subjectLevelTwoList = subject.children
+            }
+          })
+        })
+      })
+    },
     // 获取讲师列表
     initTeacherList() {
       teacherApi.list().then(res => {
@@ -132,6 +169,37 @@ export default {
           this.subjectLevelTwoList = subject.children
         }
       })
+    },
+    // 上传成功回调
+    handleCoverSuccess(res, file) {
+      if (res.success) {
+        // console.log(res)
+        this.courseInfo.cover = res.data.url
+        // 强制重新渲染
+        this.$forceUpdate()
+      } else {
+        this.$message.error('上传失败（非20000）')
+      }
+    },
+
+    // 上传校验
+    beforeCoverUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
+
+    // 错误处理
+    handleCoverError() {
+      console.log('error')
+      this.$message.error('上传失败（网络错误）')
     }
   }
 }
@@ -141,5 +209,28 @@ export default {
 .tinymce-container {
   position: relative;
   line-height: normal;
+}
+.cover-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.cover-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.cover-uploader .avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 640px;
+  height: 357px;
+  line-height: 357px;
+  text-align: center;
+}
+.cover-uploader img {
+  width: 640px;
+  height: 357px;
+  display: block;
 }
 </style>
