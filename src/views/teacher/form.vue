@@ -35,7 +35,7 @@
           :on-error="handleAvatarError"
           :before-upload="beforeAvatarUpload"
           class="avatar-uploader"
-          action="http://localhost:8120/admin/oss/upload?module=avatar"
+          action="http://localhost:8120/admin/oss/file/upload?module=avatar"
         >
           <img v-if="teacher.avatar" :src="teacher.avatar" class="avatar" >
           <i v-else class="el-icon-plus avatar-uploader-icon" />
@@ -76,7 +76,6 @@ export default {
   },
   methods: {
     saveOrUpdate() {
-      console.log(this.teacher)
       this.saveBtnDisabled = true
       if (!this.teacher.id) {
         this.saveData()
