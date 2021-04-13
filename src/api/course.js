@@ -27,5 +27,11 @@ export default {
       method: 'get',
       params: searchObj
     })
+  },
+  removeById(id) {
+    return request({
+      url: `/admin/edu/course/remove/${id}`,
+      method: 'delete'
+    })
   }
 }
