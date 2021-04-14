@@ -120,7 +120,7 @@ export const constantRouterMap = [
         path: 'chapter/:id',
         name: 'CourseChapterEdit',
         component: () => import('@/views/course/form'),
-        meta: { title: '编辑大纲' },
+        meta: { title: '编辑课程大纲' },
         hidden: true
       }
     ]
