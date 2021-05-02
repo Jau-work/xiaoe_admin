@@ -130,7 +130,7 @@ export default {
     },
     // 文件上传前校验
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg' // MIME类型
+      const isJPG = file.type === 'image/jpeg' || 'image/png' // MIME类型
       const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isJPG) {
