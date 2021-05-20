@@ -28,13 +28,13 @@
           value-format="yyyy-MM-dd"
         />
       </el-form-item>
-      <el-form-item label="-">
+      <!-- <el-form-item label="-">
         <el-date-picker
           v-model="searchObj.joinDateEnd"
           placeholder="结束时间"
           value-format="yyyy-MM-dd"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button
           type="primary"
